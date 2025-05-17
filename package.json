@@ -33,7 +33,6 @@
   },
   "homepage": "https://github.com/Priyansh-11/Priyansh-bot/issues",
   "dependencies": {
-      "jimp": "^0.22.10",
       "@distube/ytdl-core": "^4.13.2",
       "@miraipr0ject/assets": "^1.0.9",
       "@replit/database": "^2.0.2",
