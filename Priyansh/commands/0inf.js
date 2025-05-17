@@ -22,9 +22,9 @@ const time = process.uptime(),
 		minutes = Math.floor((time % (60 * 60)) / 60),
 		seconds = Math.floor(time % 60);
 const moment = require("moment-timezone");
-var juswa = moment.tz("Asia/Kolkata").format("『D/MM/YYYY』 【HH:mm:ss】");
+var juswa = moment.tz("Pakistan/Karachi").format("『D/MM/YYYY』 【HH:mm:ss】");
 var link =                                     
-["https://i.imghippo.com/files/lJ8376Tkc.jpg"];
+["https://www.imghippo.com/i/dd9751byI.jpg"];
 var callback = () => api.sendMessage({body:` ╾━╤デ╦︻(▀̿Ĺ̯▀̿ ̿)🇵🇰 𝐀𝐃𝐌𝐈𝐍 𝐀𝐍𝐃 𝐁𝐎𝐓 𝐈𝐍𝐅𝐎𝐑𝐌𝐀𝐓𝐈𝐎𝐍 🇵🇰 
 (⌐▀͡ ̯ʖ▀)︻̷┻̿═━一-
 
@@ -32,7 +32,7 @@ var callback = () => api.sendMessage({body:` ╾━╤デ╦︻(▀̿Ĺ̯▀̿ �
 
 🔥Bot Admin🔥☞︎︎︎☜︎︎︎✰ 𝔸ℍ𝕄𝕀𝕀💔🥀
 
-🙈bot andmin owner facebook id link🙈➪ https://www.facebook.com/share/1FRaYsVr3E/ 💞🕊️
+🙈bot andmin owner facebook id link🙈➪ https://www.facebook.com/ahmadali.safdar.52 💞🕊️
 
 👋For Any Kind Of Help Contact On Telegram  Username 👉 @telegram3😇
 
@@ -40,7 +40,7 @@ var callback = () => api.sendMessage({body:` ╾━╤デ╦︻(▀̿Ĺ̯▀̿ �
 
 🌸Bot Prefix🌸☞︎︎︎☜︎︎︎✰ ${global.config.PREFIX}
 
-♥️Bot Owner♥️ ☞︎︎︎☜︎︎︎✰ 𝔸ℍ𝕄𝕀𝕀
+♥️Bot Owner♥️ ☞︎︎︎☜︎︎︎✰ 𝐀𝐇𝐌𝐀𝐃 𝐀𝐋𝚰
 
 🥳UPTIME🥳
 
