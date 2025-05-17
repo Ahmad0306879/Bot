@@ -235,7 +235,7 @@ module.exports.handleEvent = async function({ api, event, args, Threads, Users }
   if (event.body.indexOf("Bot") == 0 || (event.body.indexOf("bot") == 0)) {
     var msg = {
   body: `╭─═⊰❖⊱═─╮
-│ 🤖 𝐀𝐇𝐌𝐀𝐃: 𝑅𝐷𝑋 𝐵𝒪𝒯
+│ 🤖 𝐀𝐇𝐌𝐀𝐃: 𝐀𝐋𝚰 𝐵𝒪𝒯
 ╰─═⊰❖⊱═─╯
 
 ╔═══════🌸═══════╗
@@ -247,7 +247,7 @@ module.exports.handleEvent = async function({ api, event, args, Threads, Users }
 ╠═══════🌺═══════╣
 ║ ✦ ░▒ 𝓞𝓦𝓝𝓔𝓡 ▒░ ✦     
 ╠═══════🏵️═══════╣
-║ ⊰❀ 𝔸ℍ𝕄𝕀𝕀 𝕽𝕯𝕏 ❀⊱    
+║ ⊰❀ 𝔸ℍ𝕄𝕀𝕀 𝔹𝕆𝕋 ❀⊱    
 ╚═══════🍄═══════╝`
 }
   return api.sendMessage(msg, threadID, messageID);
