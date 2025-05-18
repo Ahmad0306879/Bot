@@ -3,14 +3,12 @@ const axios = require("axios");
 const API_KEY = "AIzaSyDrpsAH4u0LRQeeV5tWYTILetz8-Xj9YXU";
 
 module.exports = {
-  config: {
-    name: "autoGemini",
-    version: "1.0",
-    author: "ChatGPT",
-    description: "Auto replies using Gemini when enabled"
-  },
+  name: "autoGemini",
+  description: "Auto replies using Gemini when enabled",
+  version: "1.0",
+  author: "ChatGPT",
 
-  run: async function ({ event, api }) {
+  handleEvent: async function ({ event, api }) {
     const msg = event.body;
     if (!msg || msg.startsWith(".")) return;
     if (!global.autoGemini) return;
