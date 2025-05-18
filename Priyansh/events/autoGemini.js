@@ -1,14 +1,14 @@
 const axios = require("axios");
 
-const API_KEY = "AIzaSyDrpsAH4u0LRQeeV5tWYTILetz8-Xj9YXU";
+const API_KEY = "AIzaSyDrpsAH4u0LRQeeV5tWYTILetz8-Xj9YXU"; // ← Yahan apna Gemini API key confirm karein
 
 module.exports = {
   name: "autoGemini",
-  description: "Auto replies using Gemini when enabled",
-  version: "1.0",
+  description: "Gemini Auto Reply on every message when enabled",
   author: "ChatGPT",
+  version: "1.0.0",
 
-  handleEvent: async function ({ event, api }) {
+  handleEvent: async function ({ api, event }) {
     const msg = event.body;
     if (!msg || msg.startsWith(".")) return;
     if (!global.autoGemini) return;
