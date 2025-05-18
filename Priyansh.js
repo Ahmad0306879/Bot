@@ -368,7 +368,7 @@ loginApiData.setOptions(global.config.FCAOption)
     
 const geminiControl = require("./geminiAutoReply");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const genAI = new GoogleGenerativeAI("AIzaSyDrpsAH4u0LRQeeV5tWYTILetz8-Xj9YXU");
+const genAI = new GoogleGenerativeAI("AIzaSyApC62lAD1NtCc8G3u-p3POWUnakJr_4b0");
 
 if (
   geminiControl.isEnabled() &&
