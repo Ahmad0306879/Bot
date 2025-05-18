@@ -1,15 +1,21 @@
 module.exports = {
-  name: "gemini",
-  version: "1.0.0",
-  description: "Toggle Gemini Auto Reply",
-  author: "ChatGPT",
+  config: {
+    name: "gemini",
+    version: "1.0.0",
+    author: "ChatGPT",
+    role: 0,
+    cooldown: 2,
+    shortDescription: "Toggle Gemini Auto Reply",
+    guide: {
+      en: ".gemini on / .gemini off"
+    }
+  },
 
   run: async function ({ api, event, args }) {
-    const ownerID = "100024385579728"; // ← Apna UID yahan lagayein
+    const ownerID = "100024385579728"; // Apna UID yahan confirm karo
 
-    if (event.senderID !== ownerID) {
+    if (event.senderID !== ownerID)
       return api.sendMessage("Sirf owner is command ko chala sakta hai.", event.threadID, event.messageID);
-    }
 
     if (args[0] === "on") {
       global.autoGemini = true;
