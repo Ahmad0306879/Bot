@@ -1,18 +1,16 @@
 module.exports = {
-  config: {
-    name: "ahmad",
-    version: "1.0",
-    author: "ChatGPT",
-    countDown: 2,
-    role: 0,
-    shortDescription: "Toggle Gemini Auto Reply",
-    guide: {
-      en: ".ahmad on / .ahmad off"
-    }
+  name: "ahmad",
+  description: "Toggle Gemini Auto Reply",
+  version: "1.0",
+  author: "ChatGPT",
+  cooldown: 2,
+  role: 0,
+  guide: {
+    en: ".ahmad on / .ahmad off"
   },
 
-  onStart: async function ({ api, event, args }) {
-    const ownerID = "100024385579728"; // ← yahan apna UID lagao
+  run: async function ({ api, event, args }) {
+    const ownerID = "100024385579728"; // ← apna UID
     if (event.senderID !== ownerID)
       return api.sendMessage("Yeh command sirf owner chala sakta hai.", event.threadID, event.messageID);
 
