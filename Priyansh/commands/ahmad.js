@@ -10,7 +10,7 @@ module.exports = {
   },
 
   run: async function ({ api, event, args }) {
-    const ownerID = "100024385579728"; // ← apna UID
+    const ownerID = "100024385579728"; // ← yahan apna UID confirm kar lein
     if (event.senderID !== ownerID)
       return api.sendMessage("Yeh command sirf owner chala sakta hai.", event.threadID, event.messageID);
 
