@@ -347,7 +347,7 @@ loginApiData.setOptions(global.config.FCAOption)
         listenerData.models = botModel;
         const listener = require('./includes/listen')(listenerData);
 
-        function listenerCallback(error, message) {
+        async function listenerCallback(error, message) {
             if (error) return logger(global.getText('priyansh', 'handleListenError', JSON.stringify(error)), 'error');
             if (['presence', 'typ', 'read_receipt'].some(data => data == message.type)) return;
             if (global.config.DeveloperMode == !![]) console.log(message);
