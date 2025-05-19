@@ -2,60 +2,56 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
-module.exports = {
-  name: 'insta',
-  description: 'Get Instagram profile info and DP without API key',
-  async run({ message, client, args }) {
-    if (!args[0]) return client.sendMessage(message.from, { text: 'Username dena zaroori hai.\nUsage: .insta username' }, { quoted: message });
+module.exports.config = {
+  name: "insta",
+  version: "1.0.0",
+  hasPermission: 0,
+  credits: "YourName",
+  description: "Fetch Instagram user info and profile picture",
+  commandCategory: "utility",
+  usages: "[username]",
+  cooldowns: 5
+};
 
-    const username = args[0].replace('@', '').trim();
-    const cachePath = path.join(__dirname, '..', 'cache', `${username}.jpg`);
+module.exports.run = async function({ api, event, args }) {
+  const username = args[0];
+  if (!username) return api.sendMessage("Please provide an Instagram username.\nUsage: .insta username", event.threadID, event.messageID);
 
-    try {
-      const url = `https://www.instagram.com/${username}/?__a=1&__d=dis`;
-      const response = await axios.get(url, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-          Accept: 'application/json',
-        },
-      });
+  const cachePath = path.join(__dirname, "..", "cache", `${username}.jpg`);
 
-      const user = response.data.graphql.user;
-      if (!user) throw new Error('User not found');
+  try {
+    const url = `https://www.instagram.com/${username}/?__a=1&__d=dis`;
+    const response = await axios.get(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0"
+      }
+    });
 
-      // Profile data
-      const profilePicUrl = user.profile_pic_url_hd || user.profile_pic_url;
-      const fullName = user.full_name || 'N/A';
-      const bio = user.biography || 'No bio';
-      const followers = user.edge_followed_by.count;
-      const following = user.edge_follow.count;
-      const posts = user.edge_owner_to_timeline_media.count;
+    const user = response.data.graphql.user;
+    const fullName = user.full_name || 'N/A';
+    const bio = user.biography || 'No bio';
+    const followers = user.edge_followed_by.count;
+    const following = user.edge_follow.count;
+    const posts = user.edge_owner_to_timeline_media.count;
+    const profilePicUrl = user.profile_pic_url_hd;
 
-      // Download DP to cache
-      const picResponse = await axios.get(profilePicUrl, { responseType: 'arraybuffer' });
-      fs.writeFileSync(cachePath, picResponse.data);
+    const img = await axios.get(profilePicUrl, { responseType: 'arraybuffer' });
+    fs.writeFileSync(cachePath, Buffer.from(img.data, 'utf-8'));
 
-      // Prepare message
-      const caption = `📷 *Instagram Profile Info*\n\n` +
-                      `👤 Name: ${fullName}\n` +
-                      `🔰 Username: @${username}\n` +
-                      `📝 Bio: ${bio}\n` +
-                      `👥 Followers: ${followers}\n` +
-                      `👣 Following: ${following}\n` +
-                      `🖼️ Posts: ${posts}`;
+    const msg = `📸 Instagram Profile of @${username}\n\n` +
+                `👤 Name: ${fullName}\n` +
+                `📝 Bio: ${bio}\n` +
+                `👥 Followers: ${followers}\n` +
+                `👣 Following: ${following}\n` +
+                `🖼️ Posts: ${posts}`;
 
-      await client.sendMessage(message.from, {
-        image: fs.readFileSync(cachePath),
-        caption: caption,
-        mimetype: 'image/jpeg',
-      }, { quoted: message });
+    api.sendMessage({
+      body: msg,
+      attachment: fs.createReadStream(cachePath)
+    }, event.threadID, () => fs.unlinkSync(cachePath), event.messageID);
 
-      // Delete cached image
-      fs.unlinkSync(cachePath);
-
-    } catch (error) {
-      console.log('Error fetching Instagram:', error.message);
-      client.sendMessage(message.from, { text: 'Instagram user not found or error occurred.' }, { quoted: message });
-    }
+  } catch (err) {
+    console.log("Insta Error:", err.message);
+    api.sendMessage("Failed to fetch Instagram profile. Maybe username is incorrect or Instagram changed API.", event.threadID, event.messageID);
   }
 };
