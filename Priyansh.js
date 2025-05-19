@@ -379,11 +379,18 @@ if (
       {
         message: message.body,
         model: "command-r-plus",
-        temperature: 0.8
+        temperature: 0.8,
+        chat_history: [
+          {
+            role: "SYSTEM",
+            message:
+              "You are a helpful assistant who can reply in any language, including Urdu, Hindi, Punjabi, and Roman Urdu. Be friendly and casual."
+          }
+        ]
       },
       {
         headers: {
-          "Authorization": "Bearer VvFHxtkaO9MbcrpikkaAvYrX4Orz0m93K6ItCq9I",
+          Authorization: "Bearer VvFHxtkaO9MbcrpikkaAvYrX4Orz0m93K6ItCq9I",
           "Content-Type": "application/json"
         }
       }
