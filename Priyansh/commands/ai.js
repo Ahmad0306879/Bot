@@ -1,57 +1,64 @@
-
-const axios = require("axios");
+const https = require("https");
 const fs = require("fs");
 const path = require("path");
-require("dotenv").config();
+const axios = require("https"); // using Node's https here to avoid axios install
+
+const COHERE_API_KEY = "cti7tCsv9yhYRsfj7AnUVB2l28Bh3twdpXQE7Usr";
 
 module.exports.config = {
-    name: "ai",
-    version: "1.0.0",
-    hasPermission: 0,
-    credits: "ChatGPT + Ayesha Bot",
-    description: "AI Urdu voice reply using OpenAI",
-    commandCategory: "ai",
-    usages: "[question]",
-    cooldowns: 2,
+  name: "ai",
+  version: "1.0.0",
+  hasPermission: 0,
+  credits: "Cohere + Online TTS",
+  description: "Ultra-simple Urdu AI",
+  commandCategory: "ai",
+  usages: "[question]",
+  cooldowns: 2,
 };
 
-module.exports.run = async function({ api, event, args }) {
-    const question = args.join(" ");
-    if (!question) return api.sendMessage("⛔ براہ کرم کوئی سوال درج کریں جیسے: .ai آپ کیسے ہیں؟", event.threadID, event.messageID);
+module.exports.run = async function ({ api, event, args }) {
+  const msg = args.join(" ");
+  if (!msg) return api.sendMessage("⛔ Sawal likho: .ai tum kon ho", event.threadID);
 
-    const replyText = `آپ نے پوچھا: ${question}۔ میں بالکل ٹھیک ہوں، شکریہ!`; // Static reply, can be made dynamic with GPT if needed
+  const filePath = path.join(__dirname, "voice.mp3");
 
-    const filePath = path.join(__dirname, "reply.mp3");
+  try {
+    // Step 1: CoHere reply
+    const cohereRes = await fetch("https://api.cohere.ai/v1/chat", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${COHERE_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: msg,
+        model: "command-r-plus",
+        temperature: 0.7,
+        preamble: "آپ ایک اردو بولنے والے مددگار اسسٹنٹ ہیں جو ہمیشہ اردو میں جواب دیتا ہے۔"
+      })
+    });
 
-    try {
-        const response = await axios.post(
-            "https://api.openai.com/v1/audio/speech",
-            {
-                model: "tts-1",
-                input: replyText,
-                voice: "nova"
-            },
-            {
-                headers: {
-                    "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-                    "Content-Type": "application/json"
-                },
-                responseType: "stream"
-            }
-        );
+    const data = await cohereRes.json();
+    const reply = data.text;
 
-        const writer = fs.createWriteStream(filePath);
-        response.data.pipe(writer);
+    // Step 2: Generate voice using free online API
+    const ttsURL = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(reply)}&tl=ur&client=tw-ob`;
 
-        writer.on("finish", () => {
-            api.sendMessage({
-                body: "🎧 یہ رہا آپ کا اردو میں جواب:",
-                attachment: fs.createReadStream(filePath)
-            }, event.threadID, () => fs.unlinkSync(filePath));
+    const file = fs.createWriteStream(filePath);
+    https.get(ttsURL, function (response) {
+      response.pipe(file);
+      file.on("finish", () => {
+        file.close(() => {
+          api.sendMessage({
+            body: "🎧 Ye raha Urdu jawab:",
+            attachment: fs.createReadStream(filePath)
+          }, event.threadID, () => fs.unlinkSync(filePath));
         });
+      });
+    });
 
-    } catch (error) {
-        console.error("❌ Voice generation error:", error.message);
-        return api.sendMessage("⚠️ آواز پیدا کرنے میں مسئلہ ہوا۔ براہ کرم بعد میں کوشش کریں۔", event.threadID, event.messageID);
-    }
+  } catch (err) {
+    console.error("❌ Error:", err.message);
+    api.sendMessage("⚠️ Koi masla hua voice banate waqt.", event.threadID);
+  }
 };
