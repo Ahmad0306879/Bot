@@ -9,15 +9,15 @@ module.exports = {
     name: "ai",
     aliases: [],
     description: "AI ka jawab voice mein dega",
-    usage: ".ai <message>"
+    usage: ".ai <sawal>"
   },
 
   async run({ api, event, args }) {
     const prompt = args.join(" ");
-    if (!prompt) return api.sendMessage("⚠️ Sawal likho jaise: .ai tum kon ho?", event.threadID);
+    if (!prompt) return api.sendMessage("⚠️ Sawal likho jaise: .ai tum kon ho", event.threadID);
 
     try {
-      // ✅ STEP 1: Get AI Response from OpenAI
+      // ✅ STEP 1: AI response lo (Direct key use)
       const ai = await axios.post(
         "https://api.openai.com/v1/chat/completions",
         {
@@ -26,7 +26,7 @@ module.exports = {
         },
         {
           headers: {
-            Authorization: `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`, // 🔁 Yahan apni OpenAI key daalein
+            Authorization: `Bearer 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`,
             "Content-Type": "application/json"
           }
         }
@@ -34,9 +34,9 @@ module.exports = {
 
       const reply = ai.data.choices[0].message.content;
 
-      // ✅ STEP 2: Convert AI reply to Voice
+      // ✅ STEP 2: AI reply ko voice mein convert karo
       const url = gTTS.getAudioUrl(reply, {
-        lang: "ur", // 🔁 Zubaan change kar sakte ho: 'en', 'hi' etc.
+        lang: "ur", // 'en' or 'hi' bhi use ho sakta hai
         slow: false
       });
 
@@ -48,15 +48,15 @@ module.exports = {
         file.on("finish", () => {
           file.close(() => {
             api.sendMessage({ attachment: fs.createReadStream(filePath) }, event.threadID, () => {
-              fs.unlinkSync(filePath); // auto delete file
+              fs.unlinkSync(filePath); // delete after send
             });
           });
         });
       });
 
-    } catch (e) {
-      console.error("❌ Error:", e.message);
-      api.sendMessage("⚠️ AI se jawab ya voice nahi ban saka.", event.threadID);
+    } catch (err) {
+      console.error("❌ Error:", err.message);
+      api.sendMessage("⚠️ AI reply ya voice mein problem aayi.", event.threadID);
     }
   }
 };
