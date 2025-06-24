@@ -1,44 +1,42 @@
-const axios = require("axios");
-module.exports.config = {
+const gTTS = require('google-tts-api');
+const fs = require('fs');
+const https = require('https');
+const path = require('path');
+
+module.exports = {
+  config: {
     name: "ai",
-    version: "1.0.0",
-    hasPermssion: 0,
-    credits: "𝐏𝐫𝐢𝐲𝐚𝐧𝐬𝐡 𝐑𝐚𝐣𝐩𝐮𝐭",
-    description: "BlackBoxAi by Priyansh",
-    commandCategory: "ai",
-    usages: "[ask]",
-    cooldowns: 2,
-    dependecies: {
-        "axios": "1.4.0"
+    aliases: [],
+    description: "AI ka voice reply",
+    usage: ".ai <sawal>"
+  },
+
+  async run({ api, event, args }) {
+    const prompt = args.join(" ");
+    if (!prompt) return api.sendMessage("💬 Sawal likho, jaise: .ai tum kon ho?", event.threadID);
+
+    try {
+      // 🔊 Text-to-voice banayein
+      const url = gTTS.getAudioUrl(prompt, {
+        lang: 'ur', // 'en', 'hi' bhi use kar sakte ho
+        slow: false
+      });
+
+      const filePath = path.join(__dirname, "tts.mp3");
+      const file = fs.createWriteStream(filePath);
+
+      https.get(url, (response) => {
+        response.pipe(file);
+        file.on('finish', () => {
+          file.close(() => {
+            api.sendMessage({ attachment: fs.createReadStream(filePath) }, event.threadID);
+          });
+        });
+      });
+
+    } catch (e) {
+      api.sendMessage("❌ Voice reply fail hogya.", event.threadID);
+      console.error(e.message);
     }
-};
-
-module.exports.run = async function ({ api, event, args, Users }) {
-
-  const { threadID, messageID } = event;
-
-  const query = encodeURIComponent(args.join(" "));
-
-  var name = await Users.getNameUser(event.senderID);
-
-  if (!args[0]) return api.sendMessage("Please type a message...", threadID, messageID );
-  
-  api.sendMessage("Searching for an answer, please wait...", threadID, messageID);
-
-  try{
-
-    api.setMessageReaction("⌛", event.messageID, () => { }, true);
-
-    const res = await axios.get(`https://priyansh-ai.onrender.com/api/blackboxai?query=${encodeURIComponent(query)}`);
-
-    const data = res.data.priyansh;
-
-    api.sendMessage(data, event.threadID, event.messageID);
-
-    api.setMessageReaction("✅", event.messageID, () => { }, true);
-}
-  catch (error) {
-    console.error('Error fetching package.json:', error);
-  api.sendMessage("An error occurred while fetching data. Please try again later.", event.threadID, event.messageID);
   }
 };
